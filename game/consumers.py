@@ -1,12 +1,24 @@
 from channels.generic.websocket import WebsocketConsumer
+from asgiref.sync import async_to_sync
+from .models import GameInfo
+from .utils.gameManager import GameManager
 
 
 class GameConsumer(WebsocketConsumer):
     def connect(self):
-        return super().connect()
+        self.game_id=self.scope["url_route"]["kwargs"]["game_id"]
+        self.game_name=f"game_{self.game_id}"
+        async_to_sync(self.channel_layer.group_add)(
+            self.game_name,
+            self.channel_name
+        )
+        self.accept()
 
     def receive(self, text_data, bytes_data):
         return super().receive(text_data=text_data, bytes_data=bytes_data)
 
     def disconnect(self, code):
-        return super().disconnect(code)
+        async_to_sync(self.channel_layer.group_discard)(
+            self.game_name,
+            self.channel_name
+        )

@@ -1,4 +1,4 @@
 from django.contrib import admin
-from .models import GameInstance
+from .models import GameInfo
 
-admin.site.register(GameInstance)
+admin.site.register(GameInfo)
