@@ -3,6 +3,12 @@ from django.contrib.auth.models import User
 from .constants.choices import GAME_STATUS_CHOICES
 # Create your models here.
 
+class GameMove:
+    def __init__(self, userId, sign, x, y) -> None:
+        self.userId=userId
+        self.sign=sign
+        self.x=x
+        self.y=y
 
 class GameInfo(models.Model):
     timestamp=models.DateTimeField(auto_now_add=True)
