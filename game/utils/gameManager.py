@@ -1,6 +1,7 @@
 from game.constants.choices import GAME_STATUS_CHOICES
 from game.models import GameInfo
 from game.models import GameMove
+import uuid
 import json
 
 
@@ -14,7 +15,10 @@ class GameManager():
 
     def createGameInstance(self):
         try:
-            instance=GameInfo.objects.create(first_player=self.user, game_status=GAME_STATUS_CHOICES[0][0])
+            uid=uuid.uuid4[:6]
+            instance=GameInfo.objects.create(first_player=self.user, 
+                                            game_status=GAME_STATUS_CHOICES[0][0],
+                                            code=uid)
             self.game=instance
             self.sign="X"
             return True

@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.fields import UUIDField
 from .constants.choices import GAME_STATUS_CHOICES
 # Create your models here.
 
@@ -11,6 +12,7 @@ class GameMove:
         self.y=y
 
 class GameInfo(models.Model):
+    code=models.CharField(unique=True, max_length=6, blank=True, null=True)
     timestamp=models.DateTimeField(auto_now_add=True)
     first_player=models.ForeignKey(User, on_delete=models.PROTECT, 
                                     verbose_name='First player',
