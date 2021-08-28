@@ -10,6 +10,7 @@ class ChatConsumer(WebsocketConsumer):
     def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = 'chat_%s' % self.room_name
+        print(self.scope)
         self.manager=GameManager(self.scope['user'])
         self.manager.connectToGame(1)
         # Join room group
