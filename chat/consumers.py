@@ -10,9 +10,8 @@ class ChatConsumer(WebsocketConsumer):
     def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = 'chat_%s' % self.room_name
-        print(self.scope)
         self.manager=GameManager(self.scope['user'])
-        self.manager.connectToGame(1)
+        self.manager.createGameInstance()
         # Join room group
         async_to_sync(self.channel_layer.group_add)(
             self.room_group_name,
@@ -34,14 +33,24 @@ class ChatConsumer(WebsocketConsumer):
         message = text_data_json['message']
         x, y=message.split(',')
         newData, isEnded=self.manager.makeMove(x, y)
+
+        chat_message=json.dumps({"movements": newData, "isEnded": isEnded})
+
+        if isEnded!=-1 and isEnded!=0:
+            winUser=json.loads(newData)[-1]['userId']
+            chat_message=json.dumps({"movements": newData, "isEnded": isEnded, "winUser": winUser})
+            
+        
         # Send message to room group
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
             {
                 'type': 'chat_message',
-                'message': newData
+                'message': chat_message
             }
         )
+        
+
 
     # Receive message from room group
     def chat_message(self, event):

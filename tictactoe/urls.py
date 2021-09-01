@@ -20,7 +20,7 @@ from django.urls import include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    #path('api/', include('tictactoe.api-urls')),
+    path('api/', include('tictactoe.api-urls')),
     path('game/', include('game.urls')),
     path('chat/', include('chat.urls'))
 ]

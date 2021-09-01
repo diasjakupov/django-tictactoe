@@ -15,7 +15,7 @@ class GameManager():
 
     def createGameInstance(self):
         try:
-            uid=uuid.uuid4[:6]
+            uid=str(uuid.uuid4())[:6]
             instance=GameInfo.objects.create(first_player=self.user, 
                                             game_status=GAME_STATUS_CHOICES[0][0],
                                             code=uid)
@@ -26,16 +26,16 @@ class GameManager():
             print("method createGameInstance" + e)
             return False
 
-    def deleteGameInstance(self, game_id):
+    def deleteGameInstance(self, game_id: int):
         GameInfo.objects.get(pk=game_id).delete()
 
-    def connectToGame(self, game_id):
+    def connectToGame(self, game_uid: str):
         try:
-            instance=GameInfo.objects.get(pk=game_id)
+            instance=GameInfo.objects.get(code=game_uid)
             if(instance.game_status==GAME_STATUS_CHOICES[0][0]):
                 instance.second_player=self.user
-                instance.save()
                 instance.game_status=GAME_STATUS_CHOICES[1][0]
+                instance.save()
                 self.game=instance
                 self.sign="O"
                 return True
@@ -45,7 +45,7 @@ class GameManager():
             print("method connectToGame" + str(e))
             return False
 
-    def makeMove(self, x, y):
+    def makeMove(self, x:str, y:str):
         listOfMoves=[]
         newMove=GameMove(self.user.id, self.sign, x, y)
         if self.game.movements!="":

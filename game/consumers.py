@@ -12,6 +12,10 @@ class GameConsumer(WebsocketConsumer):
             self.game_name,
             self.channel_name
         )
+        self.manager=GameManager(self.scope['user'])
+        print("Connect to game")
+        isConnected=self.manager.connectToGame(self.game_id)
+        print(isConnected)
         self.accept()
 
     def receive(self, text_data, bytes_data):
