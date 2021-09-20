@@ -13,6 +13,7 @@ class GameMove:
 
 class GameInfo(models.Model):
     code=models.CharField(unique=True, max_length=6, blank=True, null=True)
+    name=models.CharField(max_length=255, null=True, blank=True)
     timestamp=models.DateTimeField(auto_now_add=True)
     first_player=models.ForeignKey(User, on_delete=models.PROTECT, 
                                     verbose_name='First player',

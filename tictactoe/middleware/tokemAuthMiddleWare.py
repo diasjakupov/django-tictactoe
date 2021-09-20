@@ -13,6 +13,7 @@ class TokenAuthMiddleWare(BaseMiddleware):
 
     async def __call__(self, scope, receive, send):
         try:
+            print("Middleware")
             id = scope["query_string"].decode()
             id = id.replace("id=", "")
         except Exception as e:

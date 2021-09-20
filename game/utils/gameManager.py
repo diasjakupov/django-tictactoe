@@ -13,12 +13,13 @@ class GameManager():
         self.game_size=3 #TODO make a dynamic size of field
 
 
-    def createGameInstance(self):
+    def createGameInstance(self, name):
         try:
             uid=str(uuid.uuid4())[:6]
             instance=GameInfo.objects.create(first_player=self.user, 
                                             game_status=GAME_STATUS_CHOICES[0][0],
-                                            code=uid)
+                                            code=uid,
+                                            name=name)
             self.game=instance
             self.sign="X"
             return True

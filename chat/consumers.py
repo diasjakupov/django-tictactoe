@@ -17,7 +17,7 @@ class ChatConsumer(WebsocketConsumer):
             self.room_group_name,
             self.channel_name
         )
-
+        
         self.accept()
 
     def disconnect(self, close_code):
@@ -29,6 +29,8 @@ class ChatConsumer(WebsocketConsumer):
 
     # Receive message from WebSocket
     def receive(self, text_data):
+        print(text_data)
+
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
         x, y=message.split(',')
@@ -40,7 +42,6 @@ class ChatConsumer(WebsocketConsumer):
             winUser=json.loads(newData)[-1]['userId']
             chat_message=json.dumps({"movements": newData, "isEnded": isEnded, "winUser": winUser})
             
-        
         # Send message to room group
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,

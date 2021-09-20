@@ -17,10 +17,10 @@
 const chatSocket = new WebSocket(
     'ws://'
     + window.location.host
-    + '/ws/chat/'
-    + roomName
+    + '/ws/game/'
+    + '123456'
     + '/'
-    + '?id=2'
+    + '?id=1'
 );
 
 chatSocket.onmessage = function(e) {
