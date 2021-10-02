@@ -5,7 +5,7 @@ from rest_framework.generics import ListAPIView
 from .models import GameInfo
 
 class GameListView(ListAPIView):
-    queryset=GameInfo.objects.filter(game_status=GAME_STATUS_CHOICES[0][0], second_player=None)
+    queryset=GameInfo.objects.filter(game_status=GAME_STATUS_CHOICES[0][0])
     serializer_class=GameListSerializer
 
 

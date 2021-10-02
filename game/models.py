@@ -5,11 +5,10 @@ from .constants.choices import GAME_STATUS_CHOICES
 # Create your models here.
 
 class GameMove:
-    def __init__(self, userId, sign, x, y) -> None:
+    def __init__(self, userId, sign, n) -> None:
         self.userId=userId
         self.sign=sign
-        self.x=x
-        self.y=y
+        self.n=n
 
 class GameInfo(models.Model):
     code=models.CharField(unique=True, max_length=6, blank=True, null=True)
@@ -19,11 +18,13 @@ class GameInfo(models.Model):
                                     verbose_name='First player',
                                     related_name='first_player'
                                     )
+    first_player_sign=models.CharField(max_length=1, null=True, blank=True)
     second_player=models.ForeignKey(User, on_delete=models.PROTECT, 
                                     verbose_name='Second player',
                                     related_name='second_player',
                                     null=True
                                     )
+    second_player_sign=models.CharField(max_length=1, null=True, blank=True)
     movements=models.TextField(blank=True, default="")
     game_status=models.CharField(verbose_name="Game Status", 
                                 choices=GAME_STATUS_CHOICES,

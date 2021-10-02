@@ -29,12 +29,10 @@ class ChatConsumer(WebsocketConsumer):
 
     # Receive message from WebSocket
     def receive(self, text_data):
-        print(text_data)
-
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
-        x, y=message.split(',')
-        newData, isEnded=self.manager.makeMove(x, y)
+        print(message)
+        newData, isEnded=self.manager.makeMove(message)
 
         chat_message=json.dumps({"movements": newData, "isEnded": isEnded})
 

@@ -20,10 +20,8 @@ class GameConsumer(WebsocketConsumer):
     def receive(self, text_data):
         try:
             text_data_json = json.loads(text_data)
-            print(text_data_json)
             message = text_data_json['message']
-            x, y=message.split(',')
-            newData, isEnded=self.manager.makeMove(x, y)
+            newData, isEnded=self.manager.makeMove(message)
 
             chat_message=json.dumps({"movements": newData, "isEnded": isEnded})
 
