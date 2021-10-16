@@ -16,7 +16,8 @@ class GameInfo(models.Model):
     timestamp=models.DateTimeField(auto_now_add=True)
     first_player=models.ForeignKey(User, on_delete=models.PROTECT, 
                                     verbose_name='First player',
-                                    related_name='first_player'
+                                    related_name='first_player',
+                                    null=True
                                     )
     first_player_sign=models.CharField(max_length=1, null=True, blank=True)
     second_player=models.ForeignKey(User, on_delete=models.PROTECT, 

@@ -23,7 +23,6 @@ class GameManager():
 
 
     def createGameInstance(self, name):
-        #TODO create a random sign of a player
         try:
             first_sign = GameSigns.x if random.random.randint(1, 2)==1 else GameSigns.o
             second_sign= GameSigns.o if first_sign==GameSigns.x else GameSigns.x
@@ -47,14 +46,16 @@ class GameManager():
             instance=GameInfo.objects.get(code=game_uid)
             if(instance.game_status==GAME_STATUS_CHOICES[0][0]):
                 if instance.first_player==None:
+                    print("CONNECT FIRST PLAYER", self.user)
                     instance.first_player=self.user
                     self.sign=instance.first_player_sign
-                    self._connectPlayer(instance, )
+                    self._connectPlayer(instance)
                 else:
+                    print("CONNECT SECOND PLAYER", self.user)
                     instance.second_player=self.user
                     self._connectPlayer(instance)
                     self.sign=instance.second_player_sign
-                    instance.game_status=GAME_STATUS_CHOICES[1][0]
+                    #instance.game_status=GAME_STATUS_CHOICES[1][0]
                 return True
             else:
                 return False
@@ -63,6 +64,7 @@ class GameManager():
             return False
 
     def makeMove(self, n:str):
+        self.game=GameInfo.objects.get(id=self.game.id)
         listOfMoves=[]
         newMove=GameMove(self.user.id, self.sign, n) #create new move by its count
         if self.game.movements!="":
@@ -71,6 +73,7 @@ class GameManager():
         listOfMoves.append(newMove.__dict__) #add new move
         self.game.movements=f'[{json.dumps(listOfMoves).replace("[","").replace("]", "")}]' #save new list of moves
         isEnded=self._checkTheGameStatus(self.game.movements) #checking game status (either it is win or draw)
+        self.game.save()
         return self.game.movements, isEnded
 
     def _checkTheGameStatus(self, movements)->int:
@@ -99,6 +102,7 @@ class GameManager():
             cooStorage.append(i[coo])
 
         #comparing made coordinates and needed coo to win
+        cooStorage.sort()
         if(cooStorage==self.lineWin):
             return True    
             
@@ -109,7 +113,6 @@ class GameManager():
         for i in movements:
             cooStorage.append([i["x"], i["y"]])
         if self.diagonalWin==movements:
-            print("true")
             return True
         return False
 

@@ -9,25 +9,28 @@ class GameConsumer(WebsocketConsumer):
     def connect(self):
         self.game_id=self.scope["url_route"]["kwargs"]["game_id"]
         self.game_name=f"game_{self.game_id}"
-        self.manager=GameManager(self.scope['user'])
-        self.manager.connectToGame(self.game_id)
+
         async_to_sync(self.channel_layer.group_add)(
             self.game_name,
             self.channel_name
         )
+
+        self.manager=GameManager(self.scope['user'])
+        self.manager.connectToGame(self.game_id)
         self.accept()
+        self.first_connect(self.manager.sign)
 
     def receive(self, text_data):
         try:
             text_data_json = json.loads(text_data)
             message = text_data_json['message']
             newData, isEnded=self.manager.makeMove(message)
-
-            chat_message=json.dumps({"movements": newData, "isEnded": isEnded})
+            print(newData)
+            chat_message=json.dumps({"movements": newData, "game_status": isEnded})
 
             if isEnded!=-1 and isEnded!=0:
                 winUser=json.loads(newData)[-1]['userId']
-                chat_message=json.dumps({"movements": newData, "isEnded": isEnded, "winUser": winUser})
+                chat_message=json.dumps({"movements": newData, "game_status": isEnded, "winUser": winUser})
             
         
             # Send message to room group
@@ -56,4 +59,10 @@ class GameConsumer(WebsocketConsumer):
         # Send message to WebSocket
         self.send(text_data=json.dumps({
             'message': message
+        }))
+
+    def first_connect(self, sign):
+        print("FIRST CONNECT")
+        self.send(text_data=json.dumps({
+            'sign': sign
         }))
