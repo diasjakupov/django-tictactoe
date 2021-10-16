@@ -55,7 +55,7 @@ class GameManager():
                     instance.second_player=self.user
                     self._connectPlayer(instance)
                     self.sign=instance.second_player_sign
-                    #instance.game_status=GAME_STATUS_CHOICES[1][0]
+                    instance.game_status=GAME_STATUS_CHOICES[1][0]
                 return True
             else:
                 return False
