@@ -21,12 +21,10 @@ class GameManager():
 
 
 
-
-    def createGameInstance(self, name):
+    def createGameInstance(self, name, uid):
         try:
             first_sign = GameSigns.x if random.random.randint(1, 2)==1 else GameSigns.o
             second_sign= GameSigns.o if first_sign==GameSigns.x else GameSigns.x
-            uid=str(uuid.uuid4())[:6]
             instance=GameInfo.objects.create(game_status=GAME_STATUS_CHOICES[0][0],
                                             code=uid,
                                             name=name,
