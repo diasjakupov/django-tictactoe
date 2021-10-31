@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'channels',
     'rest_framework',
     'debug_toolbar',
+    'rest_framework.authtoken',
 
     #apps
     'game',

@@ -1,4 +1,4 @@
-from rest_framework import status
+from rest_framework import permissions, status
 from game.serializers import GameListSerializer
 from game.constants.choices import GAME_STATUS_CHOICES
 from rest_framework.generics import ListAPIView, CreateAPIView
@@ -15,14 +15,17 @@ class GameListView(ListAPIView):
 
 
 class CreateGameView(APIView):
+    permissions=[permissions.IsAuthenticated]
 
     def post(self, request):
         manager=GameManager(request.user)
+        print(request.method)
         if request.method=="POST":
-            name, uid=request.POST["name"], request.POST["uid"]
+            name, uid=request.data["name"], request.data["uid"]
             manager.createGameInstance(name, uid)
             return Response({"uid": uid}, status=HTTP_201_CREATED)
         else:
+            print("hello3")
             return Response(status=HTTP_400_BAD_REQUEST)
 
 
