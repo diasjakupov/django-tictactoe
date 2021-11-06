@@ -16,9 +16,11 @@ class TokenAuthMiddleWare(BaseMiddleware):
             print("Middleware")
             id = scope["query_string"].decode()
             id = id.replace("id=", "")
+            print("good try")
         except Exception as e:
             print(e)
             id = "", ""
+
         if id != "":
             try:
                 user = await get_user(id)

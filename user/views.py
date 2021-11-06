@@ -30,9 +30,7 @@ class UserRegisterView(APIView):
     def post(self, request, *args, **kwargs):
         username=request.data["username"]
         password=request.data["password"]
-        re_password=request.data["re_password"]
-
-        if re_password==password and len(username)>2:
+        if len(username)>2:
             user=User.objects.create(username=username, password=password)
             token=Token.objects.create(user=user)
             return Response(data={"userId": user.id, "token": token.key, "errors":""}, status=status.HTTP_201_CREATED)

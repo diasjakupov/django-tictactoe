@@ -19,14 +19,13 @@ class CreateGameView(APIView):
 
     def post(self, request):
         manager=GameManager(request.user)
-        print(request.method)
         if request.method=="POST":
             name, uid=request.data["name"], request.data["uid"]
             manager.createGameInstance(name, uid)
             return Response({"uid": uid}, status=HTTP_201_CREATED)
         else:
             print("hello3")
-            return Response(status=HTTP_400_BAD_REQUEST)
+            return Response({"uid": None}, status=HTTP_400_BAD_REQUEST)
 
 
 
