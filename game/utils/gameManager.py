@@ -18,9 +18,6 @@ class GameManager():
         self.lineWin=[i for i in range(1, int(math.sqrt(self.game_size))+1)]
         self.diagonalWin=[[i,i] for i in range(1, int(math.sqrt(self.game_size))+1)]
 
-
-
-
     def createGameInstance(self, name, uid):
         try:
             first_sign = GameSigns.x if random.randint(1, 2)==1 else GameSigns.o
@@ -44,12 +41,10 @@ class GameManager():
             instance=GameInfo.objects.get(code=game_uid)
             if(instance.game_status==GAME_STATUS_CHOICES[0][0]):
                 if instance.first_player==None:
-                    print("CONNECT FIRST PLAYER", self.user)
                     instance.first_player=self.user
                     self.sign=instance.first_player_sign
                     self._connectPlayer(instance)
                 else:
-                    print("CONNECT SECOND PLAYER", self.user)
                     instance.second_player=self.user
                     self._connectPlayer(instance)
                     self.sign=instance.second_player_sign
@@ -87,23 +82,19 @@ class GameManager():
             needCoo=self.cooSystem[self._binarySearch(int(i["n"]))]
             listOfCoo.append(needCoo)
         #FIXME later replace this logic with minimax algorithm
-        xwin=self._checkLineWin(listOfCoo, "x") 
-        ywin=self._checkLineWin(listOfCoo, "y") 
+        xwin=self._checkLineWin(listOfCoo, "x", "y") 
+        ywin=self._checkLineWin(listOfCoo, "y", "x")
         dwin=self._checkDiagonalWin(listOfCoo)
         return xwin or ywin or dwin
 
-    def _checkLineWin(self, movements: list, coo: str)->bool:
-        cooStorage=[]
-        
-        for i in movements:
-            #create an array of coordinates selected by given coo
-            cooStorage.append(i[coo])
-
+    def _checkLineWin(self, movements: list, coo: str, opposite:str)->bool:
+        cooStorage=[i[coo] for i in movements]#create an array of coordinates selected by given coo
+        anotherCooStorage=[i[opposite] for i in movements]
         #comparing made coordinates and needed coo to win
         cooStorage.sort()
-        if(cooStorage==self.lineWin):
+        print(cooStorage, self.lineWin, self._findSubSequence(cooStorage, self.lineWin))
+        if self._findSubSequence(cooStorage, self.lineWin) and self._checkIfElementIsIdentical(anotherCooStorage):
             return True    
-            
         return False
 
     def _checkDiagonalWin(self, movements: list)->bool:
@@ -111,6 +102,7 @@ class GameManager():
         for i in movements:
             cooStorage.append([i["x"], i["y"]])
         if self.diagonalWin==movements:
+            print("DIAGONAL WIN", cooStorage, self.diagonalWin)
             return True
         return False
 
@@ -144,4 +136,24 @@ class GameManager():
                 left=mid
                 mid=(right+left)//2
         return -1
+
+    def _checkIfElementIsIdentical(self, array)->bool:
+        pointer=1
+        previous_element=array[0]
+        while pointer<len(array):
+            if previous_element==array[pointer]:
+                previous_element=array[pointer]
+                pointer+=1
+            else: return False
+        return True
+
+    def _findSubSequence(self, sequence, sub):
+        subPointer=0
+        sequencePointer=0
+        while (subPointer < len(sub)) and (sequencePointer < len(sequence)):
+            if sub[subPointer]==sequence[sequencePointer]:
+                subPointer+=1
+            sequencePointer+=1
+
+        return subPointer==len(sub)
 

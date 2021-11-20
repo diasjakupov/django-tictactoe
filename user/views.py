@@ -13,13 +13,15 @@ class UserLoginView(APIView):
     def post(self, request, *args, **kwargs):
         username=request.data["username"]
         password=request.data["password"]
+        print(username, password)
         #{
         #    "username":"admin",
         #    "password":"admin"
         #}
-        user=authenticate(username=username, password=password)
+        user=authenticate(username=username, password=password, )
         if user is not None:
-            data={"userId": user.id, "login": True, "errors":""}
+            token=Token.objects.get(user=user)
+            data={"userId": user.id, "login": True, "token":token.key,"errors":""}
             return Response(data, status=status.HTTP_202_ACCEPTED)
         else:
             data={"userId": -1, "login": False, "errors":"No such user"}
@@ -31,11 +33,13 @@ class UserRegisterView(APIView):
         username=request.data["username"]
         password=request.data["password"]
         if len(username)>2:
-            user=User.objects.create(username=username, password=password)
+            user=User.objects.create_user(username=username, password=password)
+            
+            print(user.id)
             token=Token.objects.create(user=user)
             return Response(data={"userId": user.id, "token": token.key, "errors":""}, status=status.HTTP_201_CREATED)
         else:
-            return Response(data={"userId": None, "token":None, "errors": "passwords are not identical or username is not correct"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(data={"userId": -1, "token":None, "errors": "passwords are not identical or username is not correct"}, status=status.HTTP_400_BAD_REQUEST)
 
 
         
